@@ -43,6 +43,18 @@ export default function EmployeeForm() {
             value={values.email}
             onChange={handleInputChange}
           />
+          <Controls.Input
+            name="mobile"
+            label="Mobile"
+            value={values.mobile}
+            onChange={handleInputChange}
+          />
+          <Controls.Input
+            name="city"
+            label="City"
+            value={values.city}
+            onChange={handleInputChange}
+          />
         </Grid>
 
         <Grid item sm={6}>
@@ -59,6 +71,12 @@ export default function EmployeeForm() {
             label="Department"
             onChange={handleInputChange}
             options={employeeService.getDepartmentCollection()}
+          />
+          <Controls.DatePicker
+            name="hireDate"
+            label="Hire Date"
+            value={values.hireDatec}
+            onChange={handleInputChange}
           />
           <Controls.Checkbox
             name="isPartment"
