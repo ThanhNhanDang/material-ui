@@ -17,36 +17,48 @@ const initialValues = {
   mobile: "",
   city: "",
   gender: "male",
-  departmendId: "",
+  departmentId: "",
   hireDate: new Date(),
   isPartment: false,
 };
 
 export default function EmployeeForm() {
-  const validate = () => {
-    let temp = {};
-    temp.fullname = values.fullname ? "" : "This field is required.";
-    temp.email = /$|.+@.+..+/.test(values.email) ? "" : "Email is not valid.";
-    temp.mobile =
-      values.mobile.length > 10 ? "" : "Minimum 10 numbers required.";
-    temp.city = values.city ? "" : "This field is required.";
-    temp.departmendId =
-      values.departmendId.length != 0 ? "" : "This field is required.";
+  const validate = (fieldValues = values) => {
+    let temp = { ...errors };
+    if ("fullname" in fieldValues)
+      temp.fullname = fieldValues.fullname ? "" : "This field is required.";
+    if ("email" in fieldValues)
+      temp.email = /\S+@\S+\.\S+/.test(fieldValues.email)
+        ? ""
+        : "Email is not valid.";
+    if ("mobile" in fieldValues)
+      temp.mobile =
+        fieldValues.mobile.length > 9 ? "" : "Minimum 10 numbers required.";
+    if ("city" in fieldValues)
+      temp.city = fieldValues.city ? "" : "This field is required.";
+
+    if ("departmendId" in fieldValues)
+      temp.departmentId =
+        fieldValues.departmentId.length != 0 ? "" : "This field is required.";
     setErrors({
       ...temp,
     });
-    return Object.values(temp).every(x => x == "");
+
+    if (fieldValues == values) return Object.values(temp).every((x) => x == "");
   };
 
-  const { values, errors, setErrors, handleInputChange } = useForm(
-    initialValues
+  const { values, errors, setErrors, handleInputChange, resetForm } = useForm(
+    initialValues,
+    true,
+    validate
   );
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validate()){
-      window.alert("...testing");
-    } 
+    if (validate()) {
+      employeeService.insertEmployee(values);
+      resetForm();
+    }
   };
 
   return (
@@ -72,14 +84,14 @@ export default function EmployeeForm() {
             label="Mobile"
             value={values.mobile}
             onChange={handleInputChange}
-            error={values.mobile}
+            error={errors.mobile}
           />
           <Controls.Input
             name="city"
             label="City"
             value={values.city}
             onChange={handleInputChange}
-            error={values.city}
+            error={errors.city}
           />
         </Grid>
 
@@ -93,10 +105,11 @@ export default function EmployeeForm() {
           />
           <Controls.Select
             name="departmendId"
-            value={values.departmendId}
+            value={values.departmentId}
             label="Department"
             onChange={handleInputChange}
             options={employeeService.getDepartmentCollection()}
+            error={errors.departmentId}
           />
           <Controls.DatePicker
             name="hireDate"
@@ -112,7 +125,7 @@ export default function EmployeeForm() {
           />
           <div>
             <Controls.Button type="submit" text="Submit" />
-            <Controls.Button text="Reset" color="default" />
+            <Controls.Button text="Reset" color="default" onClick={resetForm} />
           </div>
         </Grid>
       </Grid>
