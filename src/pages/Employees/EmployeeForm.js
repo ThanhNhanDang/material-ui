@@ -23,12 +23,34 @@ const initialValues = {
 };
 
 export default function EmployeeForm() {
-  const { values, handleInputChange } = useForm(initialValues);
+  const validate = () => {
+    let temp = {};
+    temp.fullname = values.fullname ? "" : "This field is required.";
+    temp.email = /$|.+@.+..+/.test(values.email) ? "" : "Email is not valid.";
+    temp.mobile =
+      values.mobile.length > 10 ? "" : "Minimum 10 numbers required.";
+    temp.city = values.city ? "" : "This field is required.";
+    temp.departmendId =
+      values.departmendId.length != 0 ? "" : "This field is required.";
+    setErrors({
+      ...temp,
+    });
+    return Object.values(temp).every(x => x == "");
+  };
 
-  useEffect(() => {});
+  const { values, errors, setErrors, handleInputChange } = useForm(
+    initialValues
+  );
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()){
+      window.alert("...testing");
+    } 
+  };
 
   return (
-    <Form>
+    <Form onSubmit={handleSubmit}>
       <Grid container>
         <Grid item sm={6}>
           <Controls.Input
@@ -36,24 +58,28 @@ export default function EmployeeForm() {
             label="Full Name"
             value={values.fullname}
             onChange={handleInputChange}
+            error={errors.fullname}
           />
           <Controls.Input
             name="email"
             label="Email"
             value={values.email}
             onChange={handleInputChange}
+            error={errors.email}
           />
           <Controls.Input
             name="mobile"
             label="Mobile"
             value={values.mobile}
             onChange={handleInputChange}
+            error={values.mobile}
           />
           <Controls.Input
             name="city"
             label="City"
             value={values.city}
             onChange={handleInputChange}
+            error={values.city}
           />
         </Grid>
 
@@ -84,6 +110,10 @@ export default function EmployeeForm() {
             value={values.isPartment}
             onChange={handleInputChange}
           />
+          <div>
+            <Controls.Button type="submit" text="Submit" />
+            <Controls.Button text="Reset" color="default" />
+          </div>
         </Grid>
       </Grid>
     </Form>

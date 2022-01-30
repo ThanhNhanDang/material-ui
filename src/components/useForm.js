@@ -3,6 +3,8 @@ import React, { useState } from "react";
 
 export function useForm(initialValues) {
   const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setValues({
@@ -10,8 +12,9 @@ export function useForm(initialValues) {
       [name]: value,
     });
   };
-  return { values, handleInputChange };
+  return { values, errors, setErrors, handleInputChange };
 }
+
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiFormControl-root": {
@@ -23,5 +26,10 @@ const useStyles = makeStyles((theme) => ({
 
 export function Form(props) {
   const classes = useStyles();
-  return <form className={classes.root} autoComplete="off">{props.children}</form>;
+  const { children, ...other } = props;
+  return (
+    <form className={classes.root} autoComplete="off" {...other}>
+      {props.children}
+    </form>
+  );
 }
