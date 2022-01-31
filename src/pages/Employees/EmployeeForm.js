@@ -37,7 +37,7 @@ export default function EmployeeForm() {
     if ("city" in fieldValues)
       temp.city = fieldValues.city ? "" : "This field is required.";
 
-    if ("departmendId" in fieldValues)
+    if ("departmentId" in fieldValues)
       temp.departmentId =
         fieldValues.departmentId.length != 0 ? "" : "This field is required.";
     setErrors({
@@ -104,9 +104,9 @@ export default function EmployeeForm() {
             items={genderItems}
           />
           <Controls.Select
-            name="departmendId"
-            value={values.departmentId}
+            name="departmentId"
             label="Department"
+            value={values.departmentId}
             onChange={handleInputChange}
             options={employeeService.getDepartmentCollection()}
             error={errors.departmentId}
@@ -114,7 +114,7 @@ export default function EmployeeForm() {
           <Controls.DatePicker
             name="hireDate"
             label="Hire Date"
-            value={values.hireDatec}
+            value={values.hireDate}
             onChange={handleInputChange}
           />
           <Controls.Checkbox
