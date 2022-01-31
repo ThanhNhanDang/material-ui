@@ -22,7 +22,9 @@ const initialValues = {
   isPartment: false,
 };
 
-export default function EmployeeForm() {
+export default function EmployeeForm(props) {
+  const { addOrEdit, recordForEdit } = props;
+
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
     if ("fullname" in fieldValues)
@@ -34,8 +36,6 @@ export default function EmployeeForm() {
     if ("mobile" in fieldValues)
       temp.mobile =
         fieldValues.mobile.length > 9 ? "" : "Minimum 10 numbers required.";
-    if ("city" in fieldValues)
-      temp.city = fieldValues.city ? "" : "This field is required.";
 
     if ("departmentId" in fieldValues)
       temp.departmentId =
@@ -47,7 +47,7 @@ export default function EmployeeForm() {
     if (fieldValues == values) return Object.values(temp).every((x) => x == "");
   };
 
-  const { values, errors, setErrors, handleInputChange, resetForm } = useForm(
+  const { values, setValues , errors, setErrors, handleInputChange, resetForm } = useForm(
     initialValues,
     true,
     validate
@@ -56,10 +56,16 @@ export default function EmployeeForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      employeeService.insertEmployee(values);
-      resetForm();
+      addOrEdit(values, resetForm);
     }
   };
+
+  useEffect(()=>{
+    if(recordForEdit != null)
+    setValues({
+      ...recordForEdit
+    })
+  },[recordForEdit])
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -91,7 +97,6 @@ export default function EmployeeForm() {
             label="City"
             value={values.city}
             onChange={handleInputChange}
-            error={errors.city}
           />
         </Grid>
 
